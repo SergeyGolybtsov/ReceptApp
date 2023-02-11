@@ -38,4 +38,19 @@ public class ReceptController {
         }
         return ResponseEntity.ok(recept);
     }
+    @DeleteMapping("{id}")
+    public ResponseEntity deleteRecept(@PathVariable int id) {
+        Recept deleteRecept = receptService.deleteRecept(id);
+        return ResponseEntity.ok(deleteRecept);
+    }
+    @PutMapping()
+    public ResponseEntity updateRecept(@RequestBody Recept recept, @PathVariable int id) {
+        Recept updateRecept = receptService.updateRecept(id, recept);
+        return ResponseEntity.ok(updateRecept);
+    }
+    @GetMapping()
+    public ResponseEntity getList() {
+        return ResponseEntity.ok(receptService.getReceptMap());
+    }
+
 }

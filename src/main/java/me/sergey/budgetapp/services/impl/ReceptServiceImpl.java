@@ -20,4 +20,18 @@ public class ReceptServiceImpl implements ReceptService {
     public Recept getReceptID(int id) {
         return receptMap.get(id);
     }
+
+    @Override
+    public Recept deleteRecept(int id) {
+        return null;
+    }
+
+    @Override
+    public Recept updateRecept(int id, Recept recept) {
+        return null;
+    }
+    @Override
+    public Map<Integer, Recept> getReceptMap() {
+        return receptMap;
+    }
 }
