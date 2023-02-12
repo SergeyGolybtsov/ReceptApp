@@ -13,17 +13,16 @@ public class IngredientController {
 
     public IngredientController(IngredientService ingredientService) {
         this.ingredientService = ingredientService;
-        ingredientService.createIngredient(new Ingredient("Селедка", 200, "гр."));
     }
 
     @PostMapping
-    public ResponseEntity createIngredient(@RequestBody Ingredient ingredient) {
+    public ResponseEntity<Ingredient> createIngredient(@RequestBody Ingredient ingredient) {
         Ingredient createdIngredient = ingredientService.createIngredient(ingredient);
         return ResponseEntity.ok(createdIngredient);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity getIngredient(@PathVariable int id) {
+    public ResponseEntity<Ingredient> getIngredient(@PathVariable int id) {
         Ingredient ingredient = ingredientService.getIngredientID(id);
         if (ingredient == null) {
             return ResponseEntity.notFound().build();
@@ -32,16 +31,17 @@ public class IngredientController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity deleteIngredient(@PathVariable int id) {
+    public ResponseEntity<Ingredient> deleteIngredient(@PathVariable int id) {
         Ingredient deleteIngredient = ingredientService.deleteIngredient(id);
         return ResponseEntity.ok(deleteIngredient);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity updateIngredient(@RequestBody Ingredient ingredient, @PathVariable int id) {
+    public ResponseEntity<Ingredient> updateIngredient(@RequestBody Ingredient ingredient, @PathVariable int id) {
         Ingredient updateIngredient = ingredientService.updateIngredient(id, ingredient);
         return ResponseEntity.ok(updateIngredient);
     }
+
     @GetMapping()
     public ResponseEntity getList() {
         return ResponseEntity.ok(ingredientService.getIngredientMap());

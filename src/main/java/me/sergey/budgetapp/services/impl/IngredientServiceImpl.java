@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+
 @Service
 public class IngredientServiceImpl implements IngredientService {
     private static int generatorId = 0;
-    private static Map<Integer, Ingredient> ingredientMap = new HashMap<>();
+    private final Map<Integer, Ingredient> ingredientMap = new HashMap<>();
+
     @Override
     public Ingredient createIngredient(Ingredient ingredient) {
         ingredientMap.put(generatorId++, ingredient);
@@ -23,13 +25,22 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     public Ingredient deleteIngredient(int id) {
-        return null;
+        if (ingredientMap.containsKey(id)) {
+            return ingredientMap.remove(id);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public Ingredient updateIngredient(int id, Ingredient ingredient) {
+        if (ingredientMap.containsKey(id)) {
+            ingredientMap.put(id, ingredient);
+            return ingredient;
+        }
         return null;
     }
+
     @Override
     public Map<Integer, Ingredient> getIngredientMap() {
         return ingredientMap;

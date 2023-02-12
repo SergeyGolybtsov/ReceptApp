@@ -11,6 +11,7 @@ public class FirstControllers {
     public String nameProject() {
         return "Hello, web";
     }
+
     @GetMapping("/info")
     public String page() {
         return """

@@ -16,38 +16,38 @@ public class ReceptController {
     private final ReceptService receptService;
     private final IngredientService ingredientService;
 
-    public ReceptController(ReceptService receptService, IngredientService ingredientService)  {
+    public ReceptController(ReceptService receptService, IngredientService ingredientService) {
         this.receptService = receptService;
         this.ingredientService = ingredientService;
-        List<Ingredient> ingredients = new ArrayList<>();
-        ingredients.add(ingredientService.getIngredientID(0));
-        List<String> step = new ArrayList<>();
-        step.add("Шаг 1:");
-        receptService.createRecept(new Recept("Селедка под шубой", 20, ingredients,step));
     }
+
     @PostMapping
-    public ResponseEntity createRecept(@RequestBody Recept recept) {
+    public ResponseEntity<Recept> createRecept(@RequestBody Recept recept) {
         Recept createRecept = receptService.createRecept(recept);
         return ResponseEntity.ok(createRecept);
     }
+
     @GetMapping("{id}")
-    public ResponseEntity getRecept(@PathVariable int id) {
+    public ResponseEntity<Recept> getRecept(@PathVariable int id) {
         Recept recept = receptService.getReceptID(id);
         if (recept == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(recept);
     }
+
     @DeleteMapping("{id}")
-    public ResponseEntity deleteRecept(@PathVariable int id) {
+    public ResponseEntity<Recept> deleteRecept(@PathVariable int id) {
         Recept deleteRecept = receptService.deleteRecept(id);
         return ResponseEntity.ok(deleteRecept);
     }
+
     @PutMapping()
-    public ResponseEntity updateRecept(@RequestBody Recept recept, @PathVariable int id) {
+    public ResponseEntity<Recept> updateRecept(@RequestBody Recept recept, @PathVariable int id) {
         Recept updateRecept = receptService.updateRecept(id, recept);
         return ResponseEntity.ok(updateRecept);
     }
+
     @GetMapping()
     public ResponseEntity getList() {
         return ResponseEntity.ok(receptService.getReceptMap());
