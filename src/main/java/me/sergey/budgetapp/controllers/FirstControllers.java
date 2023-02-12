@@ -1,18 +1,27 @@
 package me.sergey.budgetapp.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Tag(name = "Главная", description = "Главная страница с информацией")
 public class FirstControllers {
 
     @GetMapping
+    @Operation(
+            summary = "Главная страница приложения"
+    )
     public String nameProject() {
         return "Hello, web";
     }
 
     @GetMapping("/info")
+    @Operation(
+            summary = "Страница с информацией"
+    )
     public String page() {
         return """
                 <h1>Info</h1>
