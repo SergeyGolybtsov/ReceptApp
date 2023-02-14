@@ -8,19 +8,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import me.sergey.budgetapp.model.Ingredient;
 import me.sergey.budgetapp.model.Recept;
 import me.sergey.budgetapp.services.IngredientService;
 import me.sergey.budgetapp.services.ReceptService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("recipe")
-@Tag(name = "Рецепты", description = "Меню с рецептами")
+@Tag(name = "Рецепты", description = "Команды с рецептами")
 public class ReceptController {
     private final ReceptService receptService;
     private final IngredientService ingredientService;
@@ -126,6 +125,9 @@ public class ReceptController {
 
     public ResponseEntity<Recept> deleteRecept(@PathVariable int id) {
         Recept deleteRecept = receptService.deleteRecept(id);
+        if (deleteRecept == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(deleteRecept);
     }
 
@@ -169,6 +171,9 @@ public class ReceptController {
 
     public ResponseEntity<Recept> updateRecept(@RequestBody Recept recept, @PathVariable int id) {
         Recept updateRecept = receptService.updateRecept(id, recept);
+        if (ObjectUtils.isEmpty(recept)) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(updateRecept);
     }
 
@@ -192,7 +197,7 @@ public class ReceptController {
                     )
             }
     )
-    public ResponseEntity getList() {
+    public ResponseEntity<Map<Integer, Recept>> getList() {
         return ResponseEntity.ok(receptService.getReceptMap());
     }
 

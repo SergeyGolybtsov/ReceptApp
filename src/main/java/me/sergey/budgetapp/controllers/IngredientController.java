@@ -9,16 +9,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import me.sergey.budgetapp.model.Ingredient;
-import me.sergey.budgetapp.model.Recept;
 import me.sergey.budgetapp.services.IngredientService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
+import java.util.Map;
 
 @RequestMapping("ingredient")
 @RestController
-@Tag(name = "Ингредиенты", description = "Меню с ингридиентами")
+@Tag(name = "Ингредиенты", description = "Команды с ингридиентами")
 public class IngredientController {
     private final IngredientService ingredientService;
 
@@ -122,6 +122,9 @@ public class IngredientController {
 
     public ResponseEntity<Ingredient> deleteIngredient(@PathVariable int id) {
         Ingredient deleteIngredient = ingredientService.deleteIngredient(id);
+        if (deleteIngredient == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(deleteIngredient);
     }
 
@@ -165,6 +168,9 @@ public class IngredientController {
 
     public ResponseEntity<Ingredient> updateIngredient(@RequestBody Ingredient ingredient, @PathVariable int id) {
         Ingredient updateIngredient = ingredientService.updateIngredient(id, ingredient);
+        if (ObjectUtils.isEmpty(ingredient)){
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(updateIngredient);
     }
 
@@ -182,7 +188,7 @@ public class IngredientController {
                     )
             }
     )
-    public ResponseEntity getList() {
+    public ResponseEntity<Map<Integer, Ingredient>> getList() {
         return ResponseEntity.ok(ingredientService.getIngredientMap());
     }
 }
