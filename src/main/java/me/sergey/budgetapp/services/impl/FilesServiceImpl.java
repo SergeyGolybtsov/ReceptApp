@@ -4,46 +4,82 @@ import me.sergey.budgetapp.services.FilesService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 @Service
 public class FilesServiceImpl implements FilesService {
+    @Value(value = "${path.to.data.files}")
+    private String dataFilesPath;
 
-    @Value("{path.to.data.file}")
-    private String dataFilePath;
-    @Value("{name.of.data.file}")
-    private String dataFileName;
+    @Value(value = "${name.of.recipe.data.file}")
+    private String recipeDataFileName;
 
-@Override
-    public boolean saveToFile(String json) {
-        try {
-            Files.writeString(Path.of(dataFilePath), json);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
+    @Value(value = "${name.of.ingredient.data.file}")
+    private String ingredientDataFileName;
+
+    @Override
+    public String readIngredientFromFile() {
+        return readFromFile(ingredientDataFileName);
     }
 
     @Override
-    public String readIngredientsFromFile() {
-        try {
-            return Files.readString(Path.of(dataFilePath));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public boolean saveReceptToFile(String json) {
+        return saveToFile(json, recipeDataFileName);
     }
 
-    private boolean cleanDataFile() {
+    @Override
+    public String readReceptFromFile() {
+        return readFromFile(recipeDataFileName);
+    }
+    @Override
+    public boolean saveIngredientToFile(String json) {
+        return saveToFile(json, ingredientDataFileName);
+    }
+
+    public boolean cleanDataFile(String dataFileName) {
+        Path path = Path.of(dataFilesPath, dataFileName);
         try {
-            Path path = Path.of(dataFilePath);
-            Files.deleteIfExists(Path.of(dataFilePath));
-            Files.createFile(Path.of(dataFilePath));
+            Files.deleteIfExists(path);
+            Files.createFile(path);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
     }
-}
 
+    public String readFromFile(String dataFileName) {
+        try {
+            return Files.readString(Path.of(dataFilesPath, dataFileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public boolean saveToFile(String json, String dataFileName) {
+        try {
+            cleanDataFile(dataFileName);
+            Files.writeString(Path.of(dataFilesPath, dataFileName), json);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    @PostConstruct
+    private void init() {
+        try {
+            if (Files.notExists(Path.of(dataFilesPath, recipeDataFileName))) {
+                Files.createFile(Path.of(dataFilesPath, recipeDataFileName));
+            }
+            if (Files.notExists(Path.of(dataFilesPath, ingredientDataFileName))) {
+                Files.createFile(Path.of(dataFilesPath, ingredientDataFileName));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}

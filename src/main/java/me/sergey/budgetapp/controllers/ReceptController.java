@@ -88,7 +88,7 @@ public class ReceptController {
 
     public ResponseEntity<Recept> getRecept(@PathVariable int id) {
         Recept recept = receptService.getReceptID(id);
-        if (recept == null) {
+        if (ObjectUtils.isEmpty(recept)) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(recept);
@@ -125,7 +125,7 @@ public class ReceptController {
 
     public ResponseEntity<Recept> deleteRecept(@PathVariable int id) {
         Recept deleteRecept = receptService.deleteRecept(id);
-        if (deleteRecept == null) {
+        if (ObjectUtils.isEmpty(id)) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(deleteRecept);
