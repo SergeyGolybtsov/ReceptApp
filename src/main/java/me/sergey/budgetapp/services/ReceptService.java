@@ -1,6 +1,5 @@
 package me.sergey.budgetapp.services;
 
-import me.sergey.budgetapp.model.Ingredient;
 import me.sergey.budgetapp.model.Recept;
 
 import java.util.Map;

@@ -1,10 +1,14 @@
 package me.sergey.budgetapp.services.impl;
 
 import me.sergey.budgetapp.services.FilesService;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,10 +37,44 @@ public class FilesServiceImpl implements FilesService {
     public String readReceptFromFile() {
         return readFromFile(recipeDataFileName);
     }
+
+    @Override
+    public void importReceptDataFile(MultipartFile file) throws IOException {
+        cleanDataFile(recipeDataFileName);
+        File dataFile = getIngredientDataFile();
+        try (FileOutputStream fileOutputStream = new FileOutputStream(dataFile)) {
+            IOUtils.copy(file.getInputStream(), fileOutputStream);
+        } catch (IOException e) {
+            throw new IOException();
+        }
+    }
+
+    @Override
+    public void importIngredientDataFile(MultipartFile file) throws IOException {
+        cleanDataFile(ingredientDataFileName);
+        File dataFile = getIngredientDataFile();
+        try (FileOutputStream fileOutputStream = new FileOutputStream(dataFile)) {
+            IOUtils.copy(file.getInputStream(), fileOutputStream);
+        } catch (IOException e) {
+            throw new IOException();
+        }
+    }
+
+    @Override
+    public File getReceptDataFile() {
+        return new File(dataFilesPath + "/" + recipeDataFileName);
+    }
+
+    @Override
+    public File getIngredientDataFile() {
+        return new File(dataFilesPath + "/" + ingredientDataFileName);
+    }
+
     @Override
     public boolean saveIngredientToFile(String json) {
         return saveToFile(json, ingredientDataFileName);
     }
+
 
     public boolean cleanDataFile(String dataFileName) {
         Path path = Path.of(dataFilesPath, dataFileName);
