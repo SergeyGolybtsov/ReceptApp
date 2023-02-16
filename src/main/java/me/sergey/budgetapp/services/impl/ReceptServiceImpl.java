@@ -9,6 +9,11 @@ import me.sergey.budgetapp.services.ReceptService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,7 +64,17 @@ public class ReceptServiceImpl implements ReceptService {
     public Map<Integer, Recept> getReceptMap() {
         return receptMap;
     }
-
+    @Override
+    public Path createReceptTextFiles() throws IOException {
+        Path path = filesService.creatingEmptyFile("recipes");
+        for (Recept recipe : receptMap.values()) {
+            try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
+                writer.append(recipe.toString());
+                writer.append("\n");
+            }
+        }
+        return path;
+    }
     @PostConstruct
     private void use() {
         readFromFile();

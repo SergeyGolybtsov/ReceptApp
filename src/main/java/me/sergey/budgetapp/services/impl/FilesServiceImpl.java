@@ -75,6 +75,14 @@ public class FilesServiceImpl implements FilesService {
         return saveToFile(json, ingredientDataFileName);
     }
 
+    @Override
+    public Path creatingEmptyFile(String emptiness){
+        try {
+            return Files.createTempFile(Path.of(dataFilesPath), "tempFile", emptiness);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public boolean cleanDataFile(String dataFileName) {
         Path path = Path.of(dataFilesPath, dataFileName);

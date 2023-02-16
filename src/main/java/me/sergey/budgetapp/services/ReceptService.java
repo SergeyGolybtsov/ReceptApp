@@ -2,6 +2,8 @@ package me.sergey.budgetapp.services;
 
 import me.sergey.budgetapp.model.Recept;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Map;
 
 public interface ReceptService {
@@ -14,4 +16,6 @@ public interface ReceptService {
     Recept updateRecept(int id, Recept recept);
 
     Map<Integer, Recept> getReceptMap();
+
+    Path createReceptTextFiles() throws IOException;
 }

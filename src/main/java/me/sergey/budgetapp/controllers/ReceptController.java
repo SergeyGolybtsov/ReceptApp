@@ -12,9 +12,16 @@ import me.sergey.budgetapp.model.Recept;
 import me.sergey.budgetapp.services.IngredientService;
 import me.sergey.budgetapp.services.ReceptService;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 @RestController
@@ -56,6 +63,40 @@ public class ReceptController {
         Recept createRecept = receptService.createRecept(recept);
         return ResponseEntity.ok(createRecept);
     }
+    @GetMapping("export")
+    @Operation(
+            summary = "Загрузка рецептов в файл в формате текста"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Загрузка рецептов завершена",
+            content = {
+                    @Content(
+                            mediaType = "text/plain"
+                    )
+            }
+    )
+
+    public ResponseEntity<Object> getRecipeTextFile(){
+        try {
+            Path path = receptService.createReceptTextFiles();
+            if (Files.size(path) == 0){
+                return ResponseEntity.noContent().build();
+            }
+
+            InputStreamResource dmitryIsTheBest = new InputStreamResource(new FileInputStream(path.toFile())); // ))) <3
+            return ResponseEntity.ok()
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .contentLength(Files.size(path))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"Recipes.txt\"")
+                    .body(dmitryIsTheBest);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.toString());
+        }
+
+    }
+
 
     @GetMapping("{id}")
     @Operation(
@@ -93,6 +134,7 @@ public class ReceptController {
         }
         return ResponseEntity.ok(recept);
     }
+
 
     @DeleteMapping("{id}")
     @Operation(
