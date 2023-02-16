@@ -63,7 +63,6 @@ public class ReceptServiceImpl implements ReceptService {
     @PostConstruct
     private void use() {
         readFromFile();
-        saveToFile();
     }
 
     private void saveToFile() {

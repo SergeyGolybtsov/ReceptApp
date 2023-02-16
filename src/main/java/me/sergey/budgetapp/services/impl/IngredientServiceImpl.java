@@ -65,7 +65,6 @@ public class IngredientServiceImpl implements IngredientService {
     @PostConstruct
     private void use() {
         readFromFile();
-        saveToFile();
     }
 
     private void saveToFile() {
