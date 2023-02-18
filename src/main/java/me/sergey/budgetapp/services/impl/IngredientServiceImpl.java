@@ -8,10 +8,9 @@ import me.sergey.budgetapp.services.FilesService;
 import me.sergey.budgetapp.services.IngredientService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 @Service
 public class IngredientServiceImpl implements IngredientService {
@@ -28,6 +27,7 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public Ingredient createIngredient(Ingredient ingredient) {
         ingredientMap.put(generatorId++, ingredient);
+        saveToFile();
         return ingredient;
     }
 
@@ -39,7 +39,9 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public Ingredient deleteIngredient(int id) {
         if (ingredientMap.containsKey(id)) {
-            return ingredientMap.remove(id);
+            Ingredient removedIngredient = ingredientMap.remove(id);
+            saveToFile();
+            return removedIngredient;
         } else {
             return null;
         }
@@ -49,6 +51,7 @@ public class IngredientServiceImpl implements IngredientService {
     public Ingredient updateIngredient(int id, Ingredient ingredient) {
         if (ingredientMap.containsKey(id)) {
             ingredientMap.put(id, ingredient);
+            saveToFile();
             return ingredient;
         }
         return null;
@@ -59,17 +62,22 @@ public class IngredientServiceImpl implements IngredientService {
         return ingredientMap;
     }
 
+    @PostConstruct
+    private void use() {
+        readFromFile();
+    }
+
     private void saveToFile() {
         try {
-            String jason = new ObjectMapper().writeValueAsString(ingredientMap);
-            filesService.saveToFile(jason);
+            String json = new ObjectMapper().writeValueAsString(ingredientMap);
+            filesService.saveIngredientToFile(json);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
-    private void readFrommFile() {
-        String json = filesService.readIngredientsFromFile();
+    private void readFromFile() {
+        String json = filesService.readIngredientFromFile();
         try {
             if (!json.isBlank()) {
                 ingredientMap = new ObjectMapper().readValue(json, new TypeReference<Map<Integer, Ingredient>>() {
@@ -77,7 +85,7 @@ public class IngredientServiceImpl implements IngredientService {
                 generatorId = ingredientMap.size();
             }
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }

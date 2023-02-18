@@ -85,7 +85,7 @@ public class IngredientController {
 
     public ResponseEntity<Ingredient> getIngredient(@PathVariable int id) {
         Ingredient ingredient = ingredientService.getIngredientID(id);
-        if (ingredient == null) {
+        if (ObjectUtils.isEmpty(ingredient)) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(ingredient);
@@ -122,7 +122,7 @@ public class IngredientController {
 
     public ResponseEntity<Ingredient> deleteIngredient(@PathVariable int id) {
         Ingredient deleteIngredient = ingredientService.deleteIngredient(id);
-        if (deleteIngredient == null) {
+        if (ObjectUtils.isEmpty(id)) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(deleteIngredient);
