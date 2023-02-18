@@ -41,7 +41,7 @@ public class FilesServiceImpl implements FilesService {
     @Override
     public void importReceptDataFile(MultipartFile file) throws IOException {
         cleanDataFile(recipeDataFileName);
-        File dataFile = getIngredientDataFile();
+        File dataFile = getReceptDataFile();
         try (FileOutputStream fileOutputStream = new FileOutputStream(dataFile)) {
             IOUtils.copy(file.getInputStream(), fileOutputStream);
         } catch (IOException e) {
